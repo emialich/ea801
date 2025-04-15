@@ -33,19 +33,16 @@ Mais detalhes técnicos estão disponíveis no [repositório oficial da BitDogLa
 
 ## 📁 Estrutura do repositório
 
-ea801/
-├── MemoryLEDMatrixGame/
-│   ├── README.md                  # Explicação específica do projeto
-│   ├── main.py                    # Código principal do jogo
-│   ├── assets/                    # Imagens, esquemas de ligação, vídeos ou diagramas
-│   │   └── esquema_matriz_leds.png
-│   ├── docs/                      # Documentação técnica complementar 
-│   │   └── relatório_projeto.pdf
-│   └── requirements.txt           # Lista de bibliotecas (se houver)
-├── outros_projetos/              # Diretório reservado para futuros projetos
-│   └── ...
-├── README.md                     # Descrição geral da disciplina e dos projetos
-
+```
+ea801/MemoryLEDMatrixGame/
+        │   ├── README.md                  # Explicação específica do projeto
+        │   ├── main.py                    # Código principal do jogo
+        │   ├── assets/                    # Imagens, esquemas de ligação, vídeos ou diagramas
+        │   │   └── esquema_matriz_leds.png
+        │   ├── docs/                      # Documentação técnica complementar 
+        │   │   └── relatório_projeto.pdf
+        │   └── requirements.txt           # Lista de bibliotecas (se houver)
+```
 
 ## 🧠 Projeto atual
 
