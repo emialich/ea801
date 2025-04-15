@@ -2,7 +2,7 @@
 
 Este repositório contém os projetos desenvolvidos ao longo da disciplina **EA801 - Laboratório de Projetos de Sistemas Embarcados**, oferecida no primeiro semestre de 2025.
 
-## 📚 Sobre a disciplina
+## Sobre a disciplina
 
 **EA801** tem como foco a metodologia de projeto aplicada ao desenvolvimento de sistemas embarcados. Durante o curso, são abordados temas como:
 
@@ -14,7 +14,7 @@ Este repositório contém os projetos desenvolvidos ao longo da disciplina **EA8
 - Princípios de sistemas operacionais em tempo real (RTOS)
 
 
-## 🧰 Placa de desenvolvimento: BitDogLab V7
+## Placa de desenvolvimento: BitDogLab V7
 
 Os projetos desta disciplina utilizam a plataforma **BitDogLab V7**, uma placa didática baseada na **Raspberry Pi Pico H ou W**, desenvolvida no contexto do projeto [Escola 4.0 da Unicamp](https://escola4pontozero.fee.unicamp.br/).
 
@@ -31,7 +31,7 @@ A BitDogLab possui diversos componentes integrados, como:
 
 Mais detalhes técnicos estão disponíveis no [repositório oficial da BitDogLab](https://github.com/Fruett/BitDogLab).
 
-## 📁 Estrutura do repositório
+## Estrutura do repositório
 
 ```
 ea801/MemoryLEDMatrixGame/
@@ -44,15 +44,4 @@ ea801/MemoryLEDMatrixGame/
         │   └── requirements.txt           # Lista de bibliotecas (se houver)
 ```
 
-## 🧠 Projeto atual
 
-### 🔹 [Memory LED Game Matrix](https://github.com/emialich/ea801/tree/main/MemoryLEDMatrixGame)
-
-Um jogo de memória baseado em uma matriz de LEDs 5x5 WS2812B. O sistema acende sequências de LEDs coloridos que o jogador deve repetir corretamente, utilizando os botões físicos da BitDogLab. O projeto explora controle de GPIOs, temporização, lógica de jogo e manipulação de cores com Neopixels.
-
-## 📌 Observações
-
-Este repositório será atualizado conforme novos projetos forem desenvolvidos ao longo da disciplina.
-
-## 📅 Semestre: 1S/2025  
-**Curso:** Graduação / Tecnologia – UNICAMP
