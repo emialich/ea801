@@ -15,7 +15,7 @@ Este repositório contém os projetos desenvolvidos ao longo da disciplina **EA8
 
 ## Estrutura do repositório
 
-```text
+```
 ea801/
 ├── MemoryLEDMatrixGame/
 │   ├── README.md
@@ -28,7 +28,7 @@ ea801/
 ├── outros_projetos/
 │   └── ...
 └── README.md
-
+```
 
 ## Projeto atual
 
