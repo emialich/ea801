@@ -36,21 +36,49 @@ buzzer = PWM(Pin(21))
 
 # Desenhos pré-setados
 desenhos = [
+
     # Cruz com um traço vermelho e outro azul
     [
         (2, 0, (255, 0, 0)), (2, 1, (255, 0, 0)), (2, 2, (255, 0, 0)), (2, 3, (255, 0, 0)), (2, 4, (255, 0, 0)),
         (0, 2, (0, 0, 255)), (1, 2, (0, 0, 255)), (3, 2, (0, 0, 255)), (4, 2, (0, 0, 255))
     ],
+
     # Novo desenho ajustado conforme especificado
     [
         (0, 0, (255, 255, 0)), (0, 1, (255, 255, 0)), (1, 0, (255, 255, 0)), (1, 1, (255, 255, 0)),  # Amarelo
         (4, 0, (255, 0, 0)), (4, 1, (255, 0, 0)), (3, 0, (255, 0, 0)), (3, 1, (255, 0, 0)),  # Vermelho
         (0, 4, (0, 0, 255)), (0, 3, (0, 0, 255)), (1, 4, (0, 0, 255)), (1, 3, (0, 0, 255))  # Azul
     ],
+
     # Seta
     [
         (2, 0, (255, 255, 0)), (1, 1, (255, 255, 0)), (2, 1, (255, 255, 0)), (3, 1, (255, 255, 0)),
         (0, 2, (255, 255, 0)), (1, 2, (255, 255, 0)), (2, 2, (255, 255, 0)), (3, 2, (255, 255, 0)), (4, 2, (255, 255, 0))
+    ],
+
+
+    # Coração preenchido
+    [
+        (2, 0, (255, 0, 0)),
+        (1, 1, (255, 0, 0)), (2, 1, (255, 0, 0)), (3, 1, (255, 0, 0)),
+        (0, 2, (255, 0, 0)), (1, 2, (255, 0, 0)), (2, 2, (255, 0, 0)), (3, 2, (255, 0, 0)), (4, 2, (255, 0, 0)),
+        (0, 3, (255, 0, 0)), (1, 3, (255, 0, 0)), (2, 3, (255, 0, 0)), (3, 3, (255, 0, 0)), (4, 3, (255, 0, 0)),
+        (1, 4, (255, 0, 0)), (2, 4, (255, 0, 0)), (3, 4, (255, 0, 0))
+    ],
+
+    # Quadrado colorido
+    [
+        (0, 0, (255, 0, 0)), (0, 1, (255, 0, 0)), (0, 2, (255, 0, 0)), (0, 3, (255, 0, 0)), (0, 4, (255, 0, 0)),
+        (1, 0, (0, 255, 0)), (1, 4, (0, 255, 0)),
+        (2, 0, (0, 0, 255)), (2, 4, (0, 0, 255)),
+        (3, 0, (255, 255, 0)), (3, 4, (255, 255, 0)),
+        (4, 0, (255, 0, 255)), (4, 1, (255, 0, 255)), (4, 2, (255, 0, 255)), (4, 3, (255, 0, 255)), (4, 4, (255, 0, 255))
+    ],
+
+    # Letra "L"
+    [
+        (0, 0, (0, 255, 255)), (1, 0, (0, 255, 255)), (2, 0, (0, 255, 255)), (3, 0, (0, 255, 255)),
+        (4, 0, (0, 255, 255)), (4, 1, (0, 255, 255)), (4, 2, (0, 255, 255)), (4, 3, (0, 255, 255)), (4, 4, (0, 255, 255))
     ]
 ]
 
@@ -105,6 +133,8 @@ def calcular_score(matriz_jogador, desenho_alvo):
             acertos += 1
     return int((acertos / total) * 100)
 
+#Função Loop aguardando inicio
+# Inicialização: apagar a matriz de LEDs e limpar o display OLED
 # Inicialização: apagar a matriz de LEDs e limpar o display OLED
 apagar_matriz()
 oled.fill(0)
@@ -113,8 +143,57 @@ oled.text("para comecar", 0, 20)
 oled.text("EA801 W", 0, 56)
 oled.show()
 
+# Definindo as posições dos quadrados
+quadrados_5x5 = [
+    (0, 0), (0, 1), (0, 2), (0, 3), (0, 4),
+    (1, 0), (1, 4),
+    (2, 0), (2, 4),
+    (3, 0), (3, 4),
+    (4, 0), (4, 1), (4, 2), (4, 3), (4, 4)
+]
+
+quadrados_3x3 = [
+    (1, 1), (1, 2), (1, 3),
+    (2, 1), (2, 3),
+    (3, 1), (3, 2), (3, 3)
+]
+
+quadrados_1x1 = [(2, 2)]
+
+cores = [
+    (255, 0, 0),    # Vermelho
+    (0, 255, 0),    # Verde
+    (0, 0, 255)     # Azul
+]
+
+# Ordem de crescimento e diminuição (5x5 -> 3x3 -> 1x1 -> 3x3 -> 5x5)
+ordem_quadrados = [quadrados_5x5, quadrados_3x3, quadrados_1x1, quadrados_3x3, quadrados_5x5]
+cores_animacao = [cores[0], cores[1], cores[2], cores[1], cores[0]]  # Alternando as cores
+
+# Animação de quadrados piscando até o jogador apertar A
+while button_a.value() == 1:  # Enquanto o botão A não for pressionado
+    for i in range(len(ordem_quadrados)):
+        if button_a.value() == 0:  # Sai imediatamente se o botão for pressionado
+            break
+
+        # Apaga tudo antes de acender o próximo
+        for j in range(25):
+            np[j] = (0, 0, 0)
+
+        # Acende os LEDs nas posições do quadrado atual
+        for (x, y) in ordem_quadrados[i]:
+            np[y * 5 + x] = cores_animacao[i]
+        
+        np.write()
+
+        # Adiciona um delay para o efeito de piscar
+        utime.sleep(0.5)
+
+# Apaga a matriz antes de iniciar o jogo
+apagar_matriz()
 # Loop principal
 while True:
+    
     if button_a.value() == 0:  # Botão A pressionado
         utime.sleep(0.3)  # Debounce
         # Selecionar um desenho aleatório
