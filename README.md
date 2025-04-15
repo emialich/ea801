@@ -15,20 +15,19 @@ Este repositório contém os projetos desenvolvidos ao longo da disciplina **EA8
 
 ## Estrutura do repositório
 
+```text
 ea801/
 ├── MemoryLEDMatrixGame/
-│   ├── README.md                # Explicação específica do projeto
-│   ├── main.py                  # Código principal do jogo
-│   ├── assets/                  # Imagens, esquemas de ligação, vídeos ou diagramas
+│   ├── README.md
+│   ├── main.py
+│   ├── assets/
 │   │   └── esquema_matriz_leds.png
-│   ├── docs/                    # Documentação técnica complementar
+│   ├── docs/
 │   │   └── relatorio_projeto.pdf
-│   └── requirements.txt         # Lista de bibliotecas utilizadas (se aplicável)
-│
-├── outros_projetos/            # Diretório reservado para futuros projetos
-│   └── ...                     # Subpastas futuras de novos projetos
-│
-├── README.md                   # Descrição geral da disciplina e dos projetos
+│   └── requirements.txt
+├── outros_projetos/
+│   └── ...
+└── README.md
 
 
 ## Projeto atual
