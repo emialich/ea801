@@ -32,10 +32,9 @@ ea801/
 
 ## Projeto atual
 
-### [Memory LED Game Matrix](./Memory_LED_Game_Matrix)
+### [Memory LED Game Matrix](./MemoryLEDMatrixGame)
 
 Um jogo de memória baseado em uma matriz de LEDs. O sistema acende sequências de LEDs que o jogador deve repetir corretamente. Envolve controle de GPIOs, temporização, e lógica de jogo implementada em firmware para um microcontrolador.
-
 
 ##  Observações
 
