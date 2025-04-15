@@ -82,7 +82,7 @@ The game processes user input through the joystick and buttons, updates the LED 
 
 ```ascii
 [Joystick/Buttons] -> [Input Processing] -> [Game Logic] -> [LED Matrix/OLED/Buzzer]
-     ^                                                              |
+     ^                                                             |
      |                                                             |
      +-------------------------------------------------------------
 ```
