@@ -6,7 +6,7 @@ Este repositório contém os projetos desenvolvidos ao longo da disciplina **EA8
 |---------------------|---------------|
 |Enzo Mialich         |167097         |
 |Henrique Weber Soeiro  |236655                |
-|                     |               |
+
 
 ## Sobre a disciplina
 
