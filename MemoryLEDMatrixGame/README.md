@@ -37,6 +37,7 @@ Este projeto visa, portanto, integrar diversos conceitos fundamentais no desenvo
 ea801/
 └── Memory LED Matrix Game/
     └── main.py           # Lógica principal do jogo, incluindo controle da matriz de LEDs, entrada do usuário e fluxo do jogo
+    └── docs.md           # Descrição das principais funções utilizadas
 ```
 
 ---
