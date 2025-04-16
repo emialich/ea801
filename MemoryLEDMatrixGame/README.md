@@ -20,7 +20,6 @@ A interação do usuário com o sistema ocorre por meio de um cursor inicial que
 
 Enquanto o jogador realiza os movimentos e a tentativa de reconstrução da imagem original, o display OLED da placa entra em ação, exibindo em tempo real informações úteis ao jogador, como:
 - Um indicador de pontuação (score) que mostra o número de acertos em relação ao padrão original,
-- O número de tentativas restantes (caso o jogo incorpore limite de movimentos),
 - O tempo restante para completar o desafio com cronômetro.
 - Além disso, ao final de cada tentativa, o sistema verifica automaticamente o grau de similaridade entre a imagem reconstruída pelo usuário e o padrão apresentado inicialmente, e, em caso de sucesso total ou parcial, uma música de vitória é reproduzida via o módulo de buzzer piezoelétrico presente na placa, proporcionando uma resposta sonora ao resultado da jogada.
 
