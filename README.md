@@ -2,6 +2,12 @@
 
 Este repositório contém os projetos desenvolvidos ao longo da disciplina **EA801 - Laboratório de Projetos de Sistemas Embarcados**, oferecida no primeiro semestre de 2025.
 
+| Nome do Aluno       | RA            |
+|---------------------|---------------|
+|Enzo Mialich         |167097         |
+|Henrique Weber Soeiro  |236655                |
+|                     |               |
+
 ## Sobre a disciplina
 
 **EA801** tem como foco a metodologia de projeto aplicada ao desenvolvimento de sistemas embarcados. Durante o curso, são abordados temas como:
