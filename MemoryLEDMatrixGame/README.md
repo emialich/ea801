@@ -143,3 +143,10 @@ O jogo processa a entrada do usuário via joystick e botões, atualiza a exibiç
 5. **Gerenciamento de Memória:** Armazena o padrão atual e a recriação feita pelo jogador
 6. **Sistema de Temporização:** Gerencia a contagem regressiva e o tempo de execução
 7. **Máquina de Estados:** Controla o fluxo entre exibição, memorização e recriação dos padrões
+
+ ## Demonstração
+
+Este vídeo ilustra como configurar e controlar uma matriz de LEDs 5x5 para exibir diferentes formas e padrões com as cores permitidas.​
+
+[![Demonstração de Matriz RGB 5x5](https://img.youtube.com/vi/6ZmRwQnfx24/0.jpg)](https://youtu.be/6ZmRwQnfx24?si=81t3b26qD8APU6OC)
+
