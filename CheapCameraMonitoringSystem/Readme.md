@@ -1,143 +1,107 @@
-# Sistema de Detecção de Movimento com ESP32 e Notificação HTTP
 
-## Descrição
-
-Este projeto implementa um sistema de detecção de movimento baseado no microcontrolador ESP32, utilizando um sensor PIR, LEDs indicadores, um buzzer sonoro e um display LCD I2C. Ao detectar movimento, o sistema emite um alerta visual, sonoro e envia uma notificação HTTP para um endpoint configurado na nuvem, como o Amazon API Gateway.
+# ESP32-CAM Monitoramento com Alerta Ultrassônico e Envio para API
 
 ## Objetivo
 
-O objetivo principal é oferecer uma solução de monitoramento de movimento de baixo custo, eficiente e conectada à internet, com capacidade de alertar remotamente via APIs. A proposta atende aplicações residenciais, educacionais ou experimentais, onde a simplicidade e a conectividade são essenciais.
+Este projeto implementa um sistema baseado na ESP32-CAM (modelo AI Thinker) para captura de fotos e envio via HTTP para uma API, quando um objeto é detectado a uma distância inferior a 5 cm usando um sensor ultrassônico. O sistema também aciona um alarme sonoro/visual por meio de um pino de saída.
 
 ## Pré-requisitos
 
-* Microcontrolador ESP32
-* Sensor PIR (presença)
-* Display LCD I2C (endereço 0x27)
-* 2 LEDs (azul e vermelho)
-* Buzzer piezoelétrico
-* Biblioteca `WiFi.h`
-* Biblioteca `HTTPClient.h`
-* Biblioteca `Wire.h`
-* Biblioteca `LiquidCrystal_I2C.h`
-* Rede Wi-Fi disponível (sem autenticação via portal cativo)
-* Endpoint HTTP funcional (como Amazon API Gateway)
+- **Hardware**
+  - ESP32-CAM (AI Thinker)
+  - Sensor ultrassônico (HC-SR04 ou similar)
+  - Fios jumper, resistores (se necessário)
+  - Fonte de alimentação 5V para a ESP32-CAM
 
-## Instalação
+- **Software**
+  - Biblioteca `esp_camera.h` (disponível na framework do ESP32 Arduino)
+  - Biblioteca `WiFi.h`
+  - Biblioteca `HTTPClient.h`
+  - Biblioteca padrão `time.h`
+  - Configuração NTP para sincronização de data/hora
 
-1. **Instale o Arduino IDE**
+- **Conhecimentos Necessários**
+  - Noções de C++ e Arduino
+  - Configuração de redes Wi-Fi
+  - Conceitos básicos de HTTP e APIs REST
 
-   * Versão recomendada: 1.8.19 ou superior
+## Custos Estimados
 
-2. **Configure o suporte ao ESP32**
+- Custo do hardware (ESP32-CAM, sensor ultrassônico, componentes): aproximadamente US$ 10-20
+- Custos de infraestrutura para a API na nuvem (dependendo do provedor e volume de requisições)
+- Consumo de energia (baixo, típico de IoT)
+- Não há licenciamento adicional obrigatório
 
-   * Vá em `Arquivo > Preferências`, e adicione:
+## Instalação e Início Rápido
 
-     ```
-     https://raw.githubusercontent.com/espressif/arduino-esp32/gh-pages/package_esp32_index.json
-     ```
-   * Em seguida, vá em `Ferramentas > Placa > Gerenciador de Placas` e instale o pacote ESP32
+1. Conecte a ESP32-CAM e o sensor ultrassônico aos GPIOs especificados.
+2. Instale o Arduino IDE e adicione a placa "ESP32" através do gerenciador de placas.
+3. Configure as bibliotecas necessárias no Arduino IDE.
+4. Atualize as variáveis `ssid`, `password` e `base_url` no código.
+5. Carregue o código para a ESP32-CAM.
+6. Monitore o console serial para ver a inicialização e os logs.
 
-3. **Instale as bibliotecas necessárias**
+## Descrição Geral
 
-   * `LiquidCrystal_I2C` (instalável via Gerenciador de Bibliotecas)
+- O código configura a ESP32-CAM e o sensor ultrassônico.
+- Quando o sensor detecta um objeto a menos de 5 cm, a ESP32-CAM captura uma foto e a envia para a API via HTTP PUT.
+- O alarme é acionado enquanto a presença for detectada.
+- O sistema sincroniza o horário usando NTP.
 
-4. **Conecte os componentes ao ESP32**:
+## Detalhamento de Funções/Métodos
 
-   * PIR no pino 16
-   * LED azul no pino 12
-   * LED vermelho no pino 14
-   * Buzzer no pino 32
-   * Display LCD I2C nos pinos SDA/SCL padrão
+### blinkFlash(pin, duration_ms)
+- **Propósito**: Piscar o LED do flash por um tempo determinado.
+- **Parâmetros**: `pin` (número do pino), `duration_ms` (tempo em milissegundos).
+- **Retorno**: Nenhum.
 
-5. **Substitua o endpoint na variável `endpoint` do código**
+### connectWiFi()
+- **Propósito**: Conectar ao Wi-Fi com as credenciais especificadas.
+- **Parâmetros**: Nenhum.
+- **Retorno**: Nenhum.
 
-   ```cpp
-   const char* endpoint = "https://<seu-endpoint>.amazonaws.com/movimento";
-   ```
+### getDateTimeString()
+- **Propósito**: Obter a data/hora atual no formato "YYYYMMDD_HHMMSS".
+- **Parâmetros**: Nenhum.
+- **Retorno**: `String` com data/hora ou "no_time" se falhar.
 
-6. **Compile e envie o código para o ESP32**
+### medirDistanciaCM()
+- **Propósito**: Medir a distância usando o sensor ultrassônico.
+- **Parâmetros**: Nenhum.
+- **Retorno**: Distância em cm (float) ou -1 se não houver leitura.
 
-## Início Rápido
+### captureAndSendPhoto(datetime)
+- **Propósito**: Capturar uma foto e enviar para a API.
+- **Parâmetros**: `datetime` (String para nome do arquivo).
+- **Retorno**: Nenhum.
 
-1. Suba o código no ESP32.
-2. Conecte-se à rede Wi-Fi definida em `ssid` e `password`.
-3. Ao detectar movimento:
+## Fluxo de Execução
 
-   * O LED vermelho acende
-   * O buzzer emite dois bips
-   * A mensagem "Movimento detectado" é exibida no LCD
-   * Uma requisição HTTP POST é enviada com a mensagem para o endpoint
+1. `setup()` inicializa a câmera, Wi-Fi, sensor ultrassônico e sincroniza o NTP.
+2. `loop()` mede a distância a cada ciclo.
+3. Se a distância for menor que o limite (5 cm), ativa o alarme e, periodicamente, captura e envia fotos.
+4. Se não houver presença, desativa o alarme.
 
-## Solução de Problemas
+## Estruturas de Dados
 
-* **Erro de conexão Wi-Fi**:
+- Uso de tipos primitivos (`float`, `String`, `unsigned long`).
+- A escolha por `String` facilita a manipulação de data/hora e URLs.
 
-  * Verifique SSID e senha
-  * Teste a rede em um celular ou computador
+## Interações entre Componentes
 
-* **LCD não exibe nada**:
+- O sensor ultrassônico envia pulsos e mede o tempo de eco para calcular a distância.
+- A câmera captura imagens e interage com a rede via HTTPClient.
+- O NTP fornece data/hora para nomear os arquivos de imagem.
 
-  * Confirme o endereço I2C com scanner I2C
+## Exemplos de Uso
 
-* **Buzzer não emite som**:
+- Exemplo de nome de arquivo gerado: `foto_20250526_153045.jpg`.
+- URL gerada: `https://**********.execute-api.us-east-1.amazonaws.com/v1/<bucket name>/foto_20250526_153045.jpg`.
 
-  * Confirme se está ligado corretamente e se é ativo
+## Notas e Possíveis Melhorias
 
-* **Endpoint não responde**:
-
-  * Teste manualmente com `curl`
-  * Verifique permissões da API Gateway
-
-## Lógica do Sistema e Fluxo de Dados
-
-* O sensor PIR detecta movimento e gera sinal HIGH
-* O ESP32 reage ativando o LED vermelho e desativando o azul
-* O LCD exibe o alerta textual
-* O buzzer emite dois bips alternados com 150 ms
-* Um `HTTPClient` realiza um POST com JSON `{ "message": "Movimento detectado!" }`
-* Após o envio, o sistema aguarda 10 segundos antes de enviar outro alerta
-* Em caso de ausência de movimento, o LED azul é ativado e o LCD é atualizado
-
-## Interação de Componentes
-
-* O sensor PIR atua como entrada principal
-* LEDs e buzzer são saídas reativas
-* LCD comunica o status ao usuário
-* A função `enviarAlertaHTTP()` integra o ESP32 com a nuvem
-* Toda a lógica roda no loop principal, com controle de tempo para evitar notificações em excesso
-
-## Custos e Viabilidade Econômica
-
-### Consumo de Energia
-
-* **ESP32**: Consome cerca de 160 mA em modo Wi-Fi ativo (em uso contínuo)
-* **Sensor PIR**: Consumo típico de 0.06 W (\~50 µA em standby)
-* **LCD I2C e LEDs**: Baixo consumo (<50 mA no total)
-* **Buzzer**: Ativado apenas em eventos, consumo desprezível
-* A solução pode ser alimentada via fonte USB 5V ou bateria com conversor
-
-### Custos de Componentes (estimativa)
-
-| Componente         | Preço aproximado (BRL) |
-| ------------------ | ---------------------- |
-| ESP32              | R\$ 35 a R\$ 60        |
-| Sensor PIR         | R\$ 5 a R\$ 10         |
-| LCD I2C 16x2       | R\$ 15 a R\$ 25        |
-| LEDs, buzzer       | R\$ 5                  |
-| **Total estimado** | **R\$ 60 a R\$ 100**   |
-
-### Custo de Infraestrutura em Nuvem (AWS)
-
-| Serviço     | Preço (nível gratuito)                         |
-| ----------- | ---------------------------------------------- |
-| API Gateway | 1 milhão de chamadas/mês grátis por 12 meses   |
-| AWS Lambda  | 1 milhão de execuções/mês grátis por 12 meses  |
-| Amazon SNS  | 1 milhão de notificações para HTTPS/mês grátis |
-
-> Após o nível gratuito, custos continuam baixos: por exemplo, R\$ 0,0000004 por notificação SNS extra.
-
-Essa arquitetura baseada em eventos é altamente escalável e econômica, sendo ideal para projetos de IoT residenciais ou experimentais com integração em nuvem.
-
----
-
-Este projeto é modular, educativo e acessível, e pode ser expandido com recursos como controle via app, armazenamento de eventos ou integração com sistemas de segurança maiores.
+- A leitura do sensor pode ser afetada por ruídos ou superfícies irregulares.
+- Melhorar o tratamento de erros (Wi-Fi, HTTP, captura de foto).
+- Implementar autenticação na API para maior segurança.
+- Otimizar o consumo de energia para maior autonomia.
+- Ajustar a resolução e qualidade da imagem conforme a necessidade.
