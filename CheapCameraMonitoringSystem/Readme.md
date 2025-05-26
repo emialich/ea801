@@ -209,33 +209,21 @@ flowchart TD
 
 # Tabela de Precificação Média do Projeto ESP32-CAM com AWS
 
-| Serviço AWS         | Descrição do Uso                          | Nível Gratuito                                  | Uso Médio Estimado              | Custo Mensal (USD)         |
-|----------------------|-------------------------------------------|------------------------------------------------|----------------------------------|----------------------------|
-| **API Gateway**      | Chamadas HTTP para upload de fotos        | 1M requisições/mês (12 meses)                  | 500.000 requisições              | $0,00 (dentro do free tier) |
-| **AWS Lambda**       | Processamento de imagens e triggers       | 1M requisições + 400.000 GB-s/mês              | 300.000 GB-s + 200K requisições  | $0,00 (dentro do free tier) |
-| **Amazon S3**        | Armazenamento de fotos (10 GB)            | 5 GB/mês                                       | 10 GB                            | $0,12 [(10-5)*$0,023]       |
-| **SNS (Email)**      | Notificações por e-mail                   | 1.000 e-mails/mês                              | 300 e-mails                      | $0,00 (dentro do free tier) |
-| **SNS (SMS)**        | Notificações por SMS (Brasil)             | 100 SMS/mês (varia por país)                   | 150 SMS                         | $5,00 [50 SMS * $0,10]      |
-| **Transferência de Dados** | Download de fotas via internet        | 100 GB/mês                                     | 2 GB                             | $0,00 (dentro do free tier) |
-| **Total**            |                                           |                                                |                                  | **$5,12/mês**              |
+| Item/Serviço           | Descrição do Uso                          | Nível Gratuito                                  | Uso Médio Estimado              | Custo Mensal (USD)         |
+|------------------------|-------------------------------------------|------------------------------------------------|----------------------------------|----------------------------|
+| **ESP32-CAM (hardware)** | Aquisição do módulo IoT com câmera       | -                                              | 1 unidade                        | $8,00 (média global)[1][4][6] |
+| **Energia ESP32-CAM**  | Consumo elétrico (uso contínuo 24h)       | -                                              | 1,2W x 24h x 30d                 | $2,60 (tarifa $0,10/kWh)[2][5] |
+| **API Gateway**        | Chamadas HTTP para upload de fotos        | 1M requisições/mês (12 meses)                  | 500.000 requisições              | $0,00 (dentro do free tier) |
+| **AWS Lambda**         | Processamento de imagens e triggers       | 1M requisições + 400.000 GB-s/mês              | 300.000 GB-s + 200K requisições  | $0,00 (dentro do free tier) |
+| **Amazon S3**          | Armazenamento de fotos (10 GB)            | 5 GB/mês                                       | 10 GB                            | $0,12 [(10-5)*$0,023]       |
+| **SNS (Email)**        | Notificações por e-mail                   | 1.000 e-mails/mês                              | 300 e-mails                      | $0,00 (dentro do free tier) |
+| **SNS (SMS)**          | Notificações por SMS (Brasil)             | 100 SMS/mês (varia por país)                   | 150 SMS                         | $5,00 [50 SMS * $0,10]      |
+| **Transferência de Dados** | Download de fotos via internet         | 100 GB/mês                                     | 2 GB                             | $0,00 (dentro do free tier) |
+| **Total**              |                                           |                                                |                                  | **$15,72/mês**              |
 
-### Legenda e Pressupostos:
-1. **API Gateway**:  
-   - Custo pós-free tier: $1,00/milhão de requisições [1][9].  
-   - Exemplo: 500K requisições = 50% do free tier.
+### Notas e Premissas
 
-2. **AWS Lambda**:  
-   - Custo pós-free tier: $0,20/milhão de requisições + $0,0000166667/GB-s [6].  
-   - Função com 512 MB de RAM e 1s de execução: 0,5 GB-s por invocação.
-
-3. **Amazon S3**:  
-   - Armazena 10 GB de fotos (5 GB free). Custo adicional: $0,023/GB [8][16].  
-   - Operações PUT/GET dentro do free tier (2K PUT + 20K GET).
-
-4. **SNS (SMS)**:  
-   - Preço no Brasil: ~$0,10/SMS após 100 mensagens gratuitas [7][11].  
-   - SMS promocional: $0,00645/SMS (EUA) [7].
-
-5. **Economias Potenciais**:  
-   - Usar HTTP API (60% mais barato que REST API) [15][17].  
-   - Ativar cache no API Gateway para reduzir chamadas ao backend.
+- **ESP32-CAM (hardware):** Preço médio internacional entre $6 e $12, considerado $8 para referência[1][4][6].
+- **Energia ESP32-CAM:** Consumo típico entre 180mA e 310mA @5V (1 a 1,5W)[2]. Considerando 1,2W, uso contínuo, tarifa $0,10/kWh (EUA). Consumo mensal: 1,2W × 24h × 30d = 864Wh = 0,864kWh → $0,0864/kWh ≈ $2,60/mês.
+- **AWS:** Todos os serviços considerados dentro do nível gratuito, exceto S3 (armazenamento extra) e SNS SMS (mensagens acima do free tier).
+- **Valores aproximados, podem variar conforme uso, região e cotação cambial.**
