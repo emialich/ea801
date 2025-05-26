@@ -8,11 +8,12 @@
 #include "camera_pins.h"
 
 // ======= Credenciais de Wi-Fi e Endpoint da API =======
-const char* ssid = "******";
-const char* password = "*****";
+const char* ssid = "*****";
+const char* password = "********";
 
 // Substitua pela base da sua API
-const char* base_url = "****";  //
+const char* base_url = "****************";  //
+const char* chave = "***********";  // Chave de autenticação da API
 
 // ======= GPIO do flash (LED embutido) =======
 #define FLASH_GPIO 4
@@ -107,7 +108,7 @@ void captureAndSendPhoto(String datetime) {
     HTTPClient http;
     http.begin(full_url);
     http.addHeader("Content-Type", "image/jpeg");
-
+    http.addHeader("x-api-key", chave);  // Adição do header de autenticação
     int httpResponseCode = http.sendRequest("PUT", fb->buf, fb->len);
     Serial.printf("HTTP: %d\n", httpResponseCode);
 
@@ -163,15 +164,17 @@ void setup() {
   config.pin_reset    = RESET_GPIO_NUM;
   config.xclk_freq_hz = 20000000;
   config.pixel_format = PIXFORMAT_JPEG;
-  config.fb_count = 1;
+  config.fb_count = 2;
+  config.grab_mode = CAMERA_GRAB_LATEST;  // Configuração para capturar sempre a imagem mais recente
+
   if(psramFound()){
     config.frame_size = FRAMESIZE_VGA;
     config.jpeg_quality = 10;
-    config.fb_count = 1;
+    config.fb_count = 2;
   } else {
     config.frame_size = FRAMESIZE_CIF;
     config.jpeg_quality = 12;
-    config.fb_count = 1;
+    config.fb_count = 2;
   }
 
   esp_err_t err = esp_camera_init(&config);
