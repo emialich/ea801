@@ -107,14 +107,28 @@ Este projeto implementa um sistema baseado na ESP32-CAM (modelo AI Thinker) para
 - Ajustar a resolução e qualidade da imagem conforme a necessidade.
 
 ``` mermaid
+%%{init: {
+  'theme': 'base',
+  'themeVariables': {
+    'background': '#121212',
+    'primaryColor': '#bb86fc',
+    'primaryTextColor': '#ffffff',
+    'secondaryColor': '#3700b3',
+    'secondaryTextColor': '#ffffff',
+    'borderColor': '#ffffff',
+    'nodeBorder': '#ffffff',
+    'clusterBkg': '#222',
+    'clusterBorder': '#444'
+  }
+}}%%
 flowchart TD
     %% Definição de estilos
-    classDef startEnd fill:#e1f5fe,stroke:#01579b,stroke-width:3px
-    classDef sensor fill:#f3e5f5,stroke:#4a148c,stroke-width:2px
-    classDef processing fill:#e8f5e8,stroke:#1b5e20,stroke-width:2px
-    classDef hardware fill:#fff3e0,stroke:#e65100,stroke-width:2px
-    classDef cloud fill:#e3f2fd,stroke:#0d47a1,stroke-width:2px
-    classDef notification fill:#fce4ec,stroke:#880e4f,stroke-width:2px
+    classDef startEnd fill:#444,stroke:#fff,stroke-width:3px, fontColor:#fff
+    classDef sensor fill:#555,stroke:#fff,stroke-width:2px, fontColor:#fff
+    classDef processing fill:#666,stroke:#fff,stroke-width:2px, fontColor:#fff
+    classDef hardware fill:#777,stroke:#fff,stroke-width:2px, fontColor:#fff
+    classDef cloud fill:#555,stroke:#fff,stroke-width:2px, fontColor:#fff
+    classDef notification fill:#444,stroke:#fff,stroke-width:2px, fontColor:#fff
 
     %% Componentes principais
     START([Inicialização do Sistema]):::startEnd
