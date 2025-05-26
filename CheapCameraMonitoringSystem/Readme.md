@@ -105,3 +105,90 @@ Este projeto implementa um sistema baseado na ESP32-CAM (modelo AI Thinker) para
 - Implementar autenticação na API para maior segurança.
 - Otimizar o consumo de energia para maior autonomia.
 - Ajustar a resolução e qualidade da imagem conforme a necessidade.
+
+```
+flowchart TD
+    %% Definição de estilos
+    classDef startEnd fill:#e1f5fe,stroke:#01579b,stroke-width:3px
+    classDef sensor fill:#f3e5f5,stroke:#4a148c,stroke-width:2px
+    classDef processing fill:#e8f5e8,stroke:#1b5e20,stroke-width:2px
+    classDef hardware fill:#fff3e0,stroke:#e65100,stroke-width:2px
+    classDef cloud fill:#e3f2fd,stroke:#0d47a1,stroke-width:2px
+    classDef notification fill:#fce4ec,stroke:#880e4f,stroke-width:2px
+
+    %% Componentes principais
+    START([Inicialização do Sistema]):::startEnd
+    NTP[Sincronização NTP]:::processing
+    SENSOR{Sensor de Presença}:::sensor
+    
+    %% Processamento local
+    PHOTO[Captura de Imagem]:::processing
+    BUZZER[Ativar Buzzer]:::hardware
+    LCD[Exibir no LCD]:::hardware
+    UART[Comunicação UART]:::hardware
+    
+    %% Nuvem e notificações
+    API[Upload via REST API]:::cloud
+    S3[(Armazenamento S3)]:::cloud
+    LAMBDA[Função Lambda]:::cloud
+    SNS[Amazon SNS]:::notification
+    EMAIL[Notificação E-mail]:::notification
+    SMS[Notificação SMS]:::notification
+    
+    %% Estados
+    DETECTED[Presença Detectada]:::sensor
+    NOT_DETECTED[Presença Não Detectada]:::sensor
+    WAIT[Aguardar Próxima Verificação]:::processing
+
+    %% Fluxo principal
+    START --> NTP
+    NTP --> SENSOR
+    
+    %% Detecção de presença
+    SENSOR -->|Presença detectada| DETECTED
+    SENSOR -->|Presença não detectada| NOT_DETECTED
+    
+    %% Ações quando presença é detectada
+    DETECTED --> PHOTO
+    DETECTED --> BUZZER
+    DETECTED --> UART
+    
+    %% Processamento paralelo de hardware
+    UART --> LCD
+    BUZZER --> WAIT
+    LCD --> WAIT
+    
+    %% Upload e notificações
+    PHOTO -->|HTTP Upload| API
+    API -->|Trigger Event| S3
+    S3 -->|S3 Event| LAMBDA
+    LAMBDA --> SNS
+    SNS --> EMAIL
+    SNS --> SMS
+    
+    %% Retorno ao loop
+    NOT_DETECTED --> WAIT
+    EMAIL --> WAIT
+    SMS --> WAIT
+    WAIT -->|Delay| SENSOR
+
+    %% Agrupamento visual
+    subgraph "Hardware Local"
+        BUZZER
+        LCD
+        UART
+    end
+    
+    subgraph "Serviços AWS"
+        API
+        S3
+        LAMBDA
+        SNS
+    end
+    
+    subgraph "Notificações"
+        EMAIL
+        SMS
+    end
+
+```
