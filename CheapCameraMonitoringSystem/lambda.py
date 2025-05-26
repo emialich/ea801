@@ -6,8 +6,8 @@ from datetime import datetime, timezone
 sns = boto3.client('sns')
 s3 = boto3.client('s3')
 
-SNS_TOPIC_ARN = 'arn:aws:sns:us-east-1:891377097674:esp32-cam-notifications'
-PHOTO_BUCKET = 'esp32-bucket-112233'
+SNS_TOPIC_ARN = '***********'
+PHOTO_BUCKET = '************'
 
 def lambda_handler(event, context):
     for record in event['Records']:
