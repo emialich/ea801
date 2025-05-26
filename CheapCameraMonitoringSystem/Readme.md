@@ -106,7 +106,7 @@ Este projeto implementa um sistema baseado na ESP32-CAM (modelo AI Thinker) para
 - Otimizar o consumo de energia para maior autonomia.
 - Ajustar a resolução e qualidade da imagem conforme a necessidade.
 
-```
+``` mermaid
 flowchart TD
     %% Definição de estilos
     classDef startEnd fill:#e1f5fe,stroke:#01579b,stroke-width:3px
