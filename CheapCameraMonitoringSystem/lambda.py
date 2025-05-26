@@ -1,37 +1,44 @@
 import json
 import boto3
-from datetime import datetime
-
-# Substitua pelo ARN do seu tópico SNS
-TOPIC_ARN = 'arn:aws:sns:us-east-1:123456789012:meu-topico-sns'
+import urllib.parse
+from datetime import datetime, timezone
 
 sns = boto3.client('sns')
+s3 = boto3.client('s3')
+
+SNS_TOPIC_ARN = 'arn:aws:sns:us-east-1:891377097674:esp32-cam-notifications'
+PHOTO_BUCKET = 'esp32-bucket-112233'
 
 def lambda_handler(event, context):
-    try:
-        # Se vier do API Gateway, o corpo é uma string JSON
-        body = json.loads(event.get('body', '{}'))
-        mensagem_base = body.get('message', 'Movimento detectado!')
-
-        # Adiciona data e hora UTC no formato ISO 8601
-        agora = datetime.utcnow().isoformat()
-        mensagem_completa = f"🔔 ALERTA DE MOVIMENTO\n\n{mensagem_base}\nHorário: {agora} UTC"
-
-        # Publica no SNS
-        sns.publish(
-            TopicArn=TOPIC_ARN,
-            Subject="Movimento Detectado no ESP32",
-            Message=mensagem_completa
+    for record in event['Records']:
+        key = urllib.parse.unquote_plus(record['s3']['object']['key'])
+        
+        # Obtém horário atual no formato legível
+        agora = datetime.now(timezone.utc).astimezone()
+        horario_formatado = agora.strftime("%d/%m/%Y às %H:%M:%S")
+        
+        # Gera a URL temporária da imagem
+        presigned_url = s3.generate_presigned_url(
+            'get_object',
+            Params={'Bucket': PHOTO_BUCKET, 'Key': key},
+            ExpiresIn=3600  # 1 hora
         )
+        
+        mensagem = (
+            f"📸 *Presença detectada em {horario_formatado}*\n\n"
+            f"🔗 Acesse a foto aqui:\n{presigned_url}\n\n"
+            f"👀 Fique atento!"
+        )
+        
+        sns.publish(
+            TopicArn=SNS_TOPIC_ARN,
+            Subject='🚨 Alerta de Presença!',
+            Message=mensagem
+        )
+        
+        print("Notificação SNS enviada com sucesso.")
 
-        return {
-            "statusCode": 200,
-            "body": json.dumps({"success": True, "message": "Alerta enviado ao SNS"})
-        }
-
-    except Exception as e:
-        print(f"Erro: {str(e)}")
-        return {
-            "statusCode": 500,
-            "body": json.dumps({"success": False, "error": str(e)})
-        }
+    return {
+        'statusCode': 200,
+        'body': json.dumps('OK')
+    }
