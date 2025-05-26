@@ -1,112 +1,228 @@
+#include "esp_camera.h"
 #include <WiFi.h>
 #include <HTTPClient.h>
-#include <Wire.h>
-#include <LiquidCrystal_I2C.h>
+#include "time.h"
 
-// ====== CONFIGURAÇÃO DE REDE Wi-Fi ======
-const char* ssid = "Wokwi-GUEST";      // Nome da rede Wi-Fi
-const char* password = "";             // Senha da rede (vazia no Wokwi)
-const char* endpoint = "https://<>.amazonaws.com/movimento"; // Substitua com seu endpoint
+// ======= Configurações da câmera (modelo AI Thinker) =======
+#define CAMERA_MODEL_AI_THINKER
+#include "camera_pins.h"
 
-// ====== DEFINIÇÃO DOS PINOS ======
-const int PIR_PIN = 16;        // Sensor de presença (PIR)
-const int LED_AZUL = 12;       // LED azul (sem movimento)
-const int LED_VERMELHO = 14;   // LED vermelho (movimento detectado)
-const int BUZZER_PIN = 32;     // Buzzer
+// ======= Credenciais de Wi-Fi e Endpoint da API =======
+const char* ssid = "******";
+const char* password = "*****";
 
-// ====== INICIALIZAÇÃO DO LCD ======
-LiquidCrystal_I2C lcd(0x27, 16, 2); // Endereço I2C 0x27, 16 colunas, 2 linhas
+// Substitua pela base da sua API
+const char* base_url = "****";  //
 
-// ====== CONTROLE DE ENVIO ======
-unsigned long ultimaDeteccao = 0;
-const unsigned long intervaloEnvio = 10000; // 10 segundos entre envios
+// ======= GPIO do flash (LED embutido) =======
+#define FLASH_GPIO 4
 
-void setup() {
-  // Inicialização de pinos
-  pinMode(PIR_PIN, INPUT);
-  pinMode(LED_AZUL, OUTPUT);
-  pinMode(LED_VERMELHO, OUTPUT);
-  pinMode(BUZZER_PIN, OUTPUT);
+// ======= GPIOs do ultrassônico =======
+#define TRIG_PIN 14
+#define ECHO_PIN 15
 
-  // Inicialização Serial
-  Serial.begin(115200);
+// ======= GPIO de saída para alarme =======
+#define OUTPUT_ALARM_GPIO 12
 
-  // Inicialização do LCD
-  lcd.init();
-  lcd.backlight();
-  lcd.setCursor(0, 0);
-  lcd.print("Sistema iniciado");
-  delay(2000);
-  lcd.clear();
+// ======= Parâmetros do ultrassônico =======
+#define DISTANCIA_LIMITE_CM 5
+unsigned long delayFoto = 30000; // 15 segundos (configurável)
+unsigned long ultimaFotoMillis = 0;
 
-  // Conexão com Wi-Fi
-  Serial.print("Conectando-se ao Wi-Fi");
+// ======= NTP =======
+const char* ntpServer = "pool.ntp.org";
+const long  gmtOffset_sec = -3 * 3600; // Ajuste para GMT-3
+const int   daylightOffset_sec = 0;
+
+// ======= Função para piscar o flash =======
+void blinkFlash(int pin, int duration_ms) {
+  pinMode(pin, OUTPUT);
+  digitalWrite(pin, HIGH);
+  delay(duration_ms);
+  digitalWrite(pin, LOW);
+}
+
+// ======= Função para conectar ao Wi-Fi =======
+void connectWiFi() {
+  Serial.println("Iniciando conexão WiFi...");
   WiFi.begin(ssid, password);
+  WiFi.setSleep(false);
+
   while (WiFi.status() != WL_CONNECTED) {
-    delay(100);
     Serial.print(".");
-  }
-  Serial.println(" Conectado!");
-}
-
-void loop() {
-  int movimento = digitalRead(PIR_PIN);
-
-  if (movimento == HIGH) {
-    // LED e LCD para presença detectada
-    digitalWrite(LED_VERMELHO, HIGH);
-    digitalWrite(LED_AZUL, LOW);
-    lcd.setCursor(0, 0);
-    lcd.print("Movimento        ");
-    lcd.setCursor(0, 1);
-    lcd.print("detectado!       ");
-    Serial.println("Movimento detectado!");
-
-    // Emitir alerta sonoro: padrão bip-bip
-    for (int i = 0; i < 2; i++) {
-      tone(BUZZER_PIN, 1000); // Frequência de 1000 Hz
-      delay(150);             // Duração do bip
-      noTone(BUZZER_PIN);
-      delay(150);             // Pausa entre bips
-    }
-
-    // Envio via HTTP apenas se já passou tempo suficiente
-    unsigned long agora = millis();
-    if (agora - ultimaDeteccao > intervaloEnvio) {
-      enviarAlertaHTTP();
-      ultimaDeteccao = agora;
-    }
-
-  } else {
-    // LED e LCD para ausência de movimento
-    digitalWrite(LED_VERMELHO, LOW);
-    digitalWrite(LED_AZUL, HIGH);
-    lcd.setCursor(0, 0);
-    lcd.print("Sem movimento    ");
-    lcd.setCursor(0, 1);
-    lcd.print("                 ");
-    Serial.println("Sem movimento.");
+    delay(500);
   }
 
-  delay(200);
+  Serial.println("\nWiFi conectado com sucesso!");
+  Serial.print("Endereço IP: ");
+  Serial.println(WiFi.localIP());
+  blinkFlash(FLASH_GPIO, 200);
 }
 
-// ====== FUNÇÃO PARA ENVIAR ALERTA VIA HTTP POST ======
-void enviarAlertaHTTP() {
+// ======= Função para obter data/hora =======
+String getDateTimeString() {
+  struct tm timeinfo;
+  if(!getLocalTime(&timeinfo)){
+    return "no_time";
+  }
+  char buffer[32];
+  strftime(buffer, sizeof(buffer), "%Y%m%d_%H%M%S", &timeinfo);
+  return String(buffer);
+}
+
+// ======= Função para medir distância (em cm) =======
+float medirDistanciaCM() {
+  digitalWrite(TRIG_PIN, LOW);
+  delayMicroseconds(2);
+  digitalWrite(TRIG_PIN, HIGH);
+  delayMicroseconds(10);
+  digitalWrite(TRIG_PIN, LOW);
+
+  long duracao = pulseIn(ECHO_PIN, HIGH, 30000); // timeout 30ms
+  if (duracao == 0) return -1; // Sem leitura
+
+  float distancia = (duracao * 0.0343) / 2.0;
+  return distancia;
+}
+
+// ======= Função para capturar e enviar a foto =======
+void captureAndSendPhoto(String datetime) {
+
+  blinkFlash(FLASH_GPIO, 200);
+  camera_fb_t* fb = esp_camera_fb_get();
+  if (!fb) {
+    Serial.println("Erro ao capturar foto.");
+    return;
+  }
+
+  Serial.println("Foto capturada");
+  
+
   if (WiFi.status() == WL_CONNECTED) {
+    String nome_arquivo = "/foto_" + datetime + ".jpg";
+    String full_url = String(base_url) + nome_arquivo;
+    //Serial.print("S: ");
+    //Serial.println(full_url);
+
     HTTPClient http;
-    http.begin(endpoint);
-    http.addHeader("Content-Type", "application/json");
+    http.begin(full_url);
+    http.addHeader("Content-Type", "image/jpeg");
 
-    // Mensagem simples (sem hora)
-    String mensagem = "{\"message\": \"Movimento detectado!\"}";
+    int httpResponseCode = http.sendRequest("PUT", fb->buf, fb->len);
+    Serial.printf("HTTP: %d\n", httpResponseCode);
 
-    int codigoResposta = http.POST(mensagem);
-    Serial.print("HTTP POST enviado. Código resposta: ");
-    Serial.println(codigoResposta);
+    String resposta = http.getString();
+    //Serial.println("Resposta da API:");
+    //Serial.println(resposta);
 
+    //Serial.print("Foto tirada em: ");
+    //Serial.println(datetime);
+    //Serial.print("Nome do arquivo: ");
+    //Serial.println(nome_arquivo);
+    esp_camera_fb_return(fb);
     http.end();
   } else {
-    Serial.println("Falha na conexão Wi-Fi. Não foi possível enviar o alerta.");
+    Serial.println("Erro: Wi-Fi desconectado.");
   }
+
+  esp_camera_fb_return(fb);
+}
+
+// ======= Setup da ESP32-CAM =======
+void setup() {
+  Serial.begin(115200); // Serial0: TX=GPIO3, RX=GPIO1
+  Serial.println("Inicializando ESP32-CAM...");
+
+  // Configuração dos pinos do ultrassônico
+  pinMode(TRIG_PIN, OUTPUT);
+  pinMode(ECHO_PIN, INPUT);
+
+  // Configuração do pino de saída para alarme
+  pinMode(OUTPUT_ALARM_GPIO, OUTPUT);
+  digitalWrite(OUTPUT_ALARM_GPIO, LOW); // Inicialmente desligado
+
+  // Configuração da câmera (padrão AI Thinker)
+  camera_config_t config;
+  config.ledc_channel = LEDC_CHANNEL_0;
+  config.ledc_timer   = LEDC_TIMER_0;
+  config.pin_d0       = Y2_GPIO_NUM;
+  config.pin_d1       = Y3_GPIO_NUM;
+  config.pin_d2       = Y4_GPIO_NUM;
+  config.pin_d3       = Y5_GPIO_NUM;
+  config.pin_d4       = Y6_GPIO_NUM;
+  config.pin_d5       = Y7_GPIO_NUM;
+  config.pin_d6       = Y8_GPIO_NUM;
+  config.pin_d7       = Y9_GPIO_NUM;
+  config.pin_xclk     = XCLK_GPIO_NUM;
+  config.pin_pclk     = PCLK_GPIO_NUM;
+  config.pin_vsync    = VSYNC_GPIO_NUM;
+  config.pin_href     = HREF_GPIO_NUM;
+  config.pin_sscb_sda = SIOD_GPIO_NUM;
+  config.pin_sscb_scl = SIOC_GPIO_NUM;
+  config.pin_pwdn     = PWDN_GPIO_NUM;
+  config.pin_reset    = RESET_GPIO_NUM;
+  config.xclk_freq_hz = 20000000;
+  config.pixel_format = PIXFORMAT_JPEG;
+  config.fb_count = 1;
+  if(psramFound()){
+    config.frame_size = FRAMESIZE_VGA;
+    config.jpeg_quality = 10;
+    config.fb_count = 1;
+  } else {
+    config.frame_size = FRAMESIZE_CIF;
+    config.jpeg_quality = 12;
+    config.fb_count = 1;
+  }
+
+  esp_err_t err = esp_camera_init(&config);
+  if (err != ESP_OK) {
+    Serial.printf("Erro ao iniciar a câmera: 0x%x", err);
+    return;
+  }
+
+  connectWiFi();
+
+  // Inicializa NTP
+  configTime(gmtOffset_sec, daylightOffset_sec, ntpServer);
+  Serial.println("Aguardando sincronização NTP...");
+  struct tm timeinfo;
+  while(!getLocalTime(&timeinfo)){
+    Serial.print(".");
+    delay(500);
+  }
+  Serial.println("\nHorário sincronizado!");
+  //ultimaFotoMillis = millis() - delayFoto; // Permite foto logo no início
+}
+
+// ======= Loop principal =======
+void loop() {
+  float distancia = medirDistanciaCM();
+  //Serial.print("Distância medida: ");
+  if (distancia > 0) {
+    //Serial.print(distancia, 1);
+    //Serial.println(" cm");
+    // Transmite apenas a distância pela UART (pinos 1/3)
+    Serial.print("Dist:");
+    Serial.println(distancia, 2); // Exemplo: "DISTANCIA_UART:9.87"
+  } else {
+    Serial.println("Sem leitura");
+  }
+
+  unsigned long agora = millis();
+  if (distancia > 0 && distancia < DISTANCIA_LIMITE_CM) {
+    digitalWrite(OUTPUT_ALARM_GPIO, HIGH); // Mantém GPIO12 em alto enquanto presença
+    if (agora - ultimaFotoMillis >= delayFoto) {
+      String datetime = getDateTimeString();
+      //Serial.println(">>> PRESENÇA DETECTADA: Menor que 10 cm <<<");
+      captureAndSendPhoto(datetime);
+      ultimaFotoMillis = agora;
+    } else {
+      //Serial.print("Aguardando próximo envio em ");
+      //Serial.print((delayFoto - (agora - ultimaFotoMillis)) / 1000);
+      //Serial.println(" segundos...");
+    }
+  } else {
+    digitalWrite(OUTPUT_ALARM_GPIO, LOW); // Desliga GPIO12 se não houver presença
+  }
+  delay(200); // Pequeno delay para evitar leituras excessivas
 }
