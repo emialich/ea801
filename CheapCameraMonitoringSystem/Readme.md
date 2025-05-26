@@ -1,5 +1,5 @@
 
-# ESP32-CAM Monitoramento com Alerta Ultrassônico e Envio para API
+# Detecção de presença com foto e notificação externa
 
 ## Objetivo
 
