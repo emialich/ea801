@@ -221,9 +221,10 @@ flowchart TD
 | **Transferência de Dados** | Download de fotos via internet         | 100 GB/mês                                     | 2 GB                             | $0,00 (dentro do free tier) |
 | **Total**              |                                           |                                                |                                  | **$15,72/mês**              |
 
-### Notas e Premissas
 
-- **ESP32-CAM (hardware):** Preço médio internacional entre $6 e $12, considerado $8 para referência.
-- **Energia ESP32-CAM:** Consumo típico entre 180mA e 310mA @5V (1 a 1,5W)[2]. Considerando 1,2W, uso contínuo, tarifa $0,10/kWh (EUA). Consumo mensal: 1,2W × 24h × 30d = 864Wh = 0,864kWh → $0,0864/kWh ≈ $2,60/mês.
-- **AWS:** Todos os serviços considerados dentro do nível gratuito, exceto S3 (armazenamento extra) e SNS SMS (mensagens acima do free tier).
-- **Valores aproximados, podem variar conforme uso, região e cotação cambial.**
+## Demonstração
+
+Este vídeo ilustra o circuito para detecção e notificação via E-mail.
+
+[![Demonstração](https://img.youtube.com/vi/2JV3e8PUnLk/0.jpg)](https://youtu.be/2JV3e8PUnLk)
+
