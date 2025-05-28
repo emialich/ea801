@@ -211,8 +211,8 @@ flowchart TD
 
 | Item/Serviço           | Descrição do Uso                          | Nível Gratuito                                  | Uso Médio Estimado              | Custo Mensal (USD)         |
 |------------------------|-------------------------------------------|------------------------------------------------|----------------------------------|----------------------------|
-| **ESP32-CAM (hardware)** | Aquisição do módulo IoT com câmera       | -                                              | 1 unidade                        | $8,00 (média global)[1][4][6] |
-| **Energia ESP32-CAM**  | Consumo elétrico (uso contínuo 24h)       | -                                              | 1,2W x 24h x 30d                 | $2,60 (tarifa $0,10/kWh)[2][5] |
+| **ESP32-CAM (hardware)** | Aquisição do módulo IoT com câmera       | -                                              | 1 unidade                        | $8,00 (média global) |
+| **Energia ESP32-CAM**  | Consumo elétrico (uso contínuo 24h)       | -                                              | 1,2W x 24h x 30d                 | $2,60 (tarifa $0,10/kWh)|
 | **API Gateway**        | Chamadas HTTP para upload de fotos        | 1M requisições/mês (12 meses)                  | 500.000 requisições              | $0,00 (dentro do free tier) |
 | **AWS Lambda**         | Processamento de imagens e triggers       | 1M requisições + 400.000 GB-s/mês              | 300.000 GB-s + 200K requisições  | $0,00 (dentro do free tier) |
 | **Amazon S3**          | Armazenamento de fotos (10 GB)            | 5 GB/mês                                       | 10 GB                            | $0,12 [(10-5)*$0,023]       |
@@ -223,7 +223,7 @@ flowchart TD
 
 ### Notas e Premissas
 
-- **ESP32-CAM (hardware):** Preço médio internacional entre $6 e $12, considerado $8 para referência[1][4][6].
+- **ESP32-CAM (hardware):** Preço médio internacional entre $6 e $12, considerado $8 para referência.
 - **Energia ESP32-CAM:** Consumo típico entre 180mA e 310mA @5V (1 a 1,5W)[2]. Considerando 1,2W, uso contínuo, tarifa $0,10/kWh (EUA). Consumo mensal: 1,2W × 24h × 30d = 864Wh = 0,864kWh → $0,0864/kWh ≈ $2,60/mês.
 - **AWS:** Todos os serviços considerados dentro do nível gratuito, exceto S3 (armazenamento extra) e SNS SMS (mensagens acima do free tier).
 - **Valores aproximados, podem variar conforme uso, região e cotação cambial.**
