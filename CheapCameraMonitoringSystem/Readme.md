@@ -221,6 +221,10 @@ flowchart TD
 | **Transferência de Dados** | Download de fotos via internet         | 100 GB/mês                                     | 2 GB                             | $0,00 (dentro do free tier) |
 | **Total**              |                                           |                                                |                                  | **$15,72/mês**              |
 
+##Imagens
+
+![Renderização 3D Placa](CheapCameraMonitoringSystem/img/WhatsApp%20Image%202025-07-01%20at%2010.59.43%20PM%20(1).jpeg)
+
 
 ## Demonstração
 
