@@ -221,6 +221,18 @@ flowchart TD
 | **Transferência de Dados** | Download de fotos via internet         | 100 GB/mês                                     | 2 GB                             | $0,00 (dentro do free tier) |
 | **Total**              |                                           |                                                |                                  | **$15,72/mês**              |
 
+## Projeto 3 - Desenvolvimento da Placa PCB e Módulo 3D
+
+No **Projeto 3**, realizamos as seguintes etapas principais:
+
+- **Criação da placa PCB no KiCad:**  
+  Utilizamos o software KiCad para desenhar o esquemático do circuito, atribuir os footprints aos componentes e transferir o projeto para o editor de layout da placa. Organizamos os componentes, roteamos as trilhas e definimos o contorno da placa na camada Edge.Cuts. Também utilizamos a visualização 3D do KiCad para verificar o posicionamento dos componentes antes da fabricação. Por fim, geramos os arquivos Gerber necessários para a produção da PCB.
+
+- **Desenvolvimento de um módulo 3D para suporte:**  
+  Criamos um modelo tridimensional do suporte para a placa, permitindo uma documentação técnica mais completa. O modelo 3D facilita a visualização do encaixe da placa no suporte, auxiliando na fabricação e montagem do sistema, garantindo uma comunicação técnica clara e detalhada.
+
+Essas etapas integraram o desenvolvimento eletrônico e mecânico, resultando em um projeto robusto e bem documentado.
+
 ## Fotos do Projeto 3 - Embarcados
 
 <p float="left">
