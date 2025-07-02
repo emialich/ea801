@@ -206,6 +206,8 @@ flowchart TD
     end
 
 ```
+![Projeto 3 - Embarcados 2](img/aws.jpeg)
+*Legenda: Arquitetura do Sistema*
 
 # Tabela de Precificação Média do Projeto ESP32-CAM com AWS
 
