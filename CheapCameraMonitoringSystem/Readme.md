@@ -228,3 +228,4 @@ Este vídeo ilustra o circuito para detecção e notificação via E-mail.
 
 [![Demonstração](https://img.youtube.com/vi/2JV3e8PUnLk/0.jpg)](https://youtu.be/2JV3e8PUnLk)
 
+[![Embarcado](https://youtu.be/BjGMmOEsO9E)
