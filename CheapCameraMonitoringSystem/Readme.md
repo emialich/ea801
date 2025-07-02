@@ -223,11 +223,14 @@ flowchart TD
 
 ## Fotos do Projeto 3 - Embarcados
 
-![Projeto 3 - Embarcados 1](img/projeto3-embarcados%20(1).jpeg)
-![Projeto 3 - Embarcados 2](img/projeto3-embarcados%20(2).jpeg)
-![Projeto 3 - Embarcados 3](img/projeto3-embarcados%20(3).jpeg)
-![Projeto 3 - Embarcados 4](img/projeto3-embarcados%20(4).jpeg)
-![Projeto 3 - Embarcados 5](img/projeto3-embarcados%20(5).jpeg)
+<p float="left">
+  <img src="img/projeto3-embarcados%20(1).jpeg" width="200"/>
+  <img src="img/projeto3-embarcados%20(2).jpeg" width="200"/>
+  <img src="img/projeto3-embarcados%20(3).jpeg" width="200"/>
+  <img src="img/projeto3-embarcados%20(4).jpeg" width="200"/>
+  <img src="img/projeto3-embarcados%20(5).jpeg" width="200"/>
+</p>
+
 
 
 ## Demonstração
