@@ -221,9 +221,13 @@ flowchart TD
 | **Transferência de Dados** | Download de fotos via internet         | 100 GB/mês                                     | 2 GB                             | $0,00 (dentro do free tier) |
 | **Total**              |                                           |                                                |                                  | **$15,72/mês**              |
 
-##Imagens
+## Fotos do Projeto 3 - Embarcados
 
-![Renderização 3D Placa](CheapCameraMonitoringSystem/img/WhatsApp%20Image%202025-07-01%20at%2010.59.43%20PM%20(1).jpeg)
+![Projeto 3 - Embarcados 1](img/projeto3-embarcados%20(1).jpeg)
+![Projeto 3 - Embarcados 2](img/projeto3-embarcados%20(2).jpeg)
+![Projeto 3 - Embarcados 3](img/projeto3-embarcados%20(3).jpeg)
+![Projeto 3 - Embarcados 4](img/projeto3-embarcados%20(4).jpeg)
+![Projeto 3 - Embarcados 5](img/projeto3-embarcados%20(5).jpeg)
 
 
 ## Demonstração
