@@ -209,17 +209,19 @@ flowchart TD
 
 # Tabela de Precificação Média do Projeto ESP32-CAM com AWS
 
-| Item/Serviço           | Descrição do Uso                          | Nível Gratuito                                  | Uso Médio Estimado              | Custo Mensal (USD)         |
-|------------------------|-------------------------------------------|------------------------------------------------|----------------------------------|----------------------------|
-| **ESP32-CAM (hardware)** | Aquisição do módulo IoT com câmera       | -                                              | 1 unidade                        | $8,00 (média global) |
-| **Energia ESP32-CAM**  | Consumo elétrico (uso contínuo 24h)       | -                                              | 1,2W x 24h x 30d                 | $2,60 (tarifa $0,10/kWh)|
-| **API Gateway**        | Chamadas HTTP para upload de fotos        | 1M requisições/mês (12 meses)                  | 500.000 requisições              | $0,00 (dentro do free tier) |
-| **AWS Lambda**         | Processamento de imagens e triggers       | 1M requisições + 400.000 GB-s/mês              | 300.000 GB-s + 200K requisições  | $0,00 (dentro do free tier) |
-| **Amazon S3**          | Armazenamento de fotos (10 GB)            | 5 GB/mês                                       | 10 GB                            | $0,12 [(10-5)*$0,023]       |
-| **SNS (Email)**        | Notificações por e-mail                   | 1.000 e-mails/mês                              | 300 e-mails                      | $0,00 (dentro do free tier) |
-| **SNS (SMS)**          | Notificações por SMS (Brasil)             | 100 SMS/mês (varia por país)                   | 150 SMS                         | $5,00 [50 SMS * $0,10]      |
-| **Transferência de Dados** | Download de fotos via internet         | 100 GB/mês                                     | 2 GB                             | $0,00 (dentro do free tier) |
-| **Total**              |                                           |                                                |                                  | **$15,72/mês**              |
+
+| **Item/Serviço**         | **Descrição do Uso**                       | **Nível Gratuito**                             | **Uso Médio Estimado**             | **Custo Mensal (USD)**         |
+|:------------------------:|:------------------------------------------:|:----------------------------------------------:|:----------------------------------:|:------------------------------:|
+| **ESP32-CAM (hardware)** | Aquisição do módulo IoT com câmera         | -                                              | 1 unidade                          | **$8,00** (média global)       |
+| **Energia ESP32-CAM**    | Consumo elétrico (uso contínuo 24h)        | -                                              | 1,2W × 24h × 30d                   | **$2,60** (tarifa $0,10/kWh)   |
+| **API Gateway**          | Chamadas HTTP para upload de fotos         | 1M req./mês (12 meses)                         | 500.000 requisições                | **$0,00** (dentro do free tier)|
+| **AWS Lambda**           | Processamento de imagens e triggers        | 1M req. + 400.000 GB-s/mês                     | 300.000 GB-s + 200K requisições    | **$0,00** (dentro do free tier)|
+| **Amazon S3**            | Armazenamento de fotos (10 GB)             | 5 GB/mês                                       | 10 GB                              | **$0,12** [(10-5)×$0,023]      |
+| **SNS (Email)**          | Notificações por e-mail                    | 1.000 e-mails/mês                              | 300 e-mails                        | **$0,00** (dentro do free tier)|
+| **SNS (SMS)**            | Notificações por SMS (Brasil)              | 100 SMS/mês (varia por país)                   | 150 SMS                            | **$5,00** [50 SMS × $0,10]     |
+| **Transferência de Dados**| Download de fotos via internet            | 100 GB/mês                                     | 2 GB                               | **$0,00** (dentro do free tier)|
+|                           |                                           |                                                |                                    |                                |
+| **Total**                |                                           |                                                |                                    | **$15,72/mês**                 |
 
 ## Projeto 3 - Desenvolvimento da Placa PCB e Módulo 3D
 
